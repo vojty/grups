@@ -202,8 +202,13 @@ Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsah
                 }
             ]
             
-## Soubory [/groups/{id}/files]
+## Soubory [/groups/{id}/files/{directoryId}]
 Soubory hlavního streamu skupiny
+
+Atributy položky:
+
+- `type` - 1 soubor, 2 složka, 3 google drive...
+    
 ### Soubory [GET]
 + Response 200 (application/json)
 
@@ -217,8 +222,13 @@ Soubory hlavního streamu skupiny
                         "image": "/users/images/1315648.jpg"
                     },
                     "type": 1,
-                    "name": "Dokumenty",
-                    
+                    "kind": "excel file",
+                    "name": "Tabulka",
+                    "modifiedDate": {
+                        "date": "2013-01-31 11:14:05",
+                        "timezoneType": 3,
+                        "timezone": "America\/Los_Angeles"
+                    },
                 }
             ]
             
