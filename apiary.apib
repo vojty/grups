@@ -6,80 +6,6 @@ HOST: http://www.google.com
 Notes API is a *short texts saving* service similar to its physical paper presence on your table.
 
 # Group Skupina
-Základní stavební jednotkou je skupina
-
-
-<table>
-<tr>
-    <th>Atribut</th>
-    <th>Popis</th>
-    <th>Typ</th>
-    <th>Přístup</th>
-    <th>Detail</th>
-</tr>
-
-<tr>
-    <td>id</td>
-    <td>identifikátor</td>
-    <td>integer</td>
-    <td>r</td>
-    <td>Autoincrement</td>
-</tr>
-<tr>
-    <td>*name</td>
-    <td>název skupiny</td>
-    <td>string,100</td>
-    <td>r/w</td>
-    <td></td>
-</tr>
-<tr>
-    <td>createdDate</td>
-    <td>datum vytvoření</td>
-    <td>datetime</td>
-    <td>r</td>
-    <td></td>
-</tr>
-<tr>
-    <td>modifiedDate</td>
-    <td>datum změny</td>
-    <td>datetime</td>
-    <td>r</td>
-    <td></td>
-</tr>
-<tr>
-    <td>hash</td>
-    <td>datum změny</td>
-    <td>datetime</td>
-    <td>r</td>
-    <td></td>
-</tr>
-<tr>
-    <td>image</td>
-    <td>obrázek v hlavičce</td>
-    <td>string</td>
-    <td>r</td>
-    <td></td>
-</tr>
-<tr>
-    <td>userId</td>
-    <td>vlastník</td>
-    <td>integer</td>
-    <td>r</td>
-    <td></td>
-</tr>
-
-
-</table>
-
-
-
-
-
-
-
-
-
-
 
 ## Groups Collection [/groups]
 ### Seznam skupin [GET]
@@ -177,10 +103,12 @@ Popis skupiny
             }
       
 ## Stream [/groups/{id}/posts]
-Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts` 
+Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts?pinned=1` 
 
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
+Atributy postu:
+
+- `type` - 1 pokud se jedná o klasický příspěvek a obsahuje parametr `message`, 2 pokud jde o událost(i) a obsahuje `events` (př. přidání uživatele do skupiny)
+
 
 ### Skupina [GET]
 + Response 200 (application/json)
@@ -188,6 +116,9 @@ Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kom
     + Body
 
             { 
+                "total": 500,
+                "page": 0,
+                "limit": 20,
                 "posts": [
                     {
                         "type" : 1,
@@ -220,7 +151,21 @@ Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kom
                         "events": [
                             {
                                 "id": 1,
-                                
+                                "type": 1,
+                                "createdDate": {
+                                    "date": "2013-01-31 11:14:05",
+                                    "timezoneType": 3,
+                                    "timezone": "America\/Los_Angeles"
+                                },
+                            },
+                            {
+                                "id": 2,
+                                "type": 2,
+                                "createdDate": {
+                                    "date": "2013-01-31 11:14:05",
+                                    "timezoneType": 3,
+                                    "timezone": "America\/Los_Angeles"
+                                },
                             }
                         ]
                     }
@@ -228,19 +173,17 @@ Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kom
             }
       
             
-## Group [/groups/{id}/posts?pinned=1]
-Připnuté příspěvky hlavního streamu skupiny
+## Připnuté příspěvky [/groups/{id}/posts?pinned=1]
+Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsahuje `events`
 
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
 
-### Skupina [GET]
+### Připnuté příspěvky [GET]
 + Response 200 (application/json)
 
     + Body
 
-            { 
-                "posts": [
+            [
+                {
                     "user": {
                         "id": 3,
                         "name": "Templeton Peck",
@@ -259,9 +202,148 @@ Připnuté příspěvky hlavního streamu skupiny
                         },
                         "content": "UPOZORNĚNÍ: Akce se bude konat příští měsíc"
                     }
+                }
+            ]
+            
+
+# Group Téma
+
+## Topics Collection [/topics/{id}]
+### Téma skupiny [GET]
++ Response 200 (application/json)
+
+        [
+            {
+                "id": 1, 
+                "name": "A-Team",
+                "category": {
+                    "name": "Heroes",  
+                },
+                "creator": {
+                    "id": 1,
+                    "name": "B. A. Baracus",
+                },
+                "members": [
+                    {
+                        "id": 2,
+                        "name": "John Smith",
+                        "image": "/users/images/1315648.jpg"
+                        "admin": true
+                    },
+                    {
+                        "id": 3,
+                        "name": "Templeton Peck",
+                        "image": "/users/images/1315648.jpg",
+                        "admin": false
+                    },
+                    
+                ],
+                "notifications": []
+            }
+        ]
+
+## Stream [/topics/{id}/posts]
+Příspěvky streamu tématu (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts?pinned=1` 
+
+Atributy postu:
+
+- `type` - 1 pokud se jedná o klasický příspěvek a obsahuje parametr `message`, 2 pokud jde o událost(i) a obsahuje `events` (př. přidání uživatele do skupiny)
+
+
+### Skupina [GET]
++ Response 200 (application/json)
+
+    + Body
+
+            { 
+                "total": 500,
+                "page": 0,
+                "limit": 20,
+                "posts": [
+                    {
+                        "type" : 1,
+                        "user": {
+                            "id": 3,
+                            "name": "Templeton Peck",
+                            "image": "/users/images/1315648.jpg"
+                        },
+                        "message": {
+                            "createdDate": {
+                                "date": "2013-01-31 11:14:05",
+                                "timezoneType": 3,
+                                "timezone": "America\/Los_Angeles"
+                            },
+                            "modifiedDate": {
+                                "date": "2013-01-31 11:14:05",
+                                "timezoneType": 3,
+                                "timezone": "America\/Los_Angeles"
+                            },
+                            "content": "Přeji všem úspěšnou akci"
+                        }
+                    },
+                    {
+                        "type" : 2,
+                        "user": {
+                            "id": 3,
+                            "name": "Templeton Peck",
+                            "image": "/users/images/1315648.jpg"
+                        },
+                        "events": [
+                            {
+                                "id": 1,
+                                "type": 1,
+                                "createdDate": {
+                                    "date": "2013-01-31 11:14:05",
+                                    "timezoneType": 3,
+                                    "timezone": "America\/Los_Angeles"
+                                },
+                            },
+                            {
+                                "id": 2,
+                                "type": 2,
+                                "createdDate": {
+                                    "date": "2013-01-31 11:14:05",
+                                    "timezoneType": 3,
+                                    "timezone": "America\/Los_Angeles"
+                                },
+                            }
+                        ]
+                    }
                 ]
             }
+      
+            
+## Připnuté příspěvky [/topics/{id}/posts?pinned=1]
+Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsahuje `events`
 
+
+### Připnuté příspěvky [GET]
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "user": {
+                        "id": 3,
+                        "name": "Templeton Peck",
+                        "image": "/users/images/1315648.jpg"
+                    },
+                    "message": {
+                        "createdDate": {
+                            "date": "2013-01-31 11:14:05",
+                            "timezoneType": 3,
+                            "timezone": "America\/Los_Angeles"
+                        },
+                        "modifiedDate": {
+                            "date": "2013-01-31 11:14:05",
+                            "timezoneType": 3,
+                            "timezone": "America\/Los_Angeles"
+                        },
+                        "content": "UPOZORNĚNÍ: Akce se bude konat příští měsíc"
+                    }
+                }
+            ]
 
 
 
