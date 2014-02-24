@@ -46,9 +46,6 @@ Notes API is a *short texts saving* service similar to its physical paper presen
 ## Group [/groups/{id}]
 Popis skupiny
 
-+ Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
-
 ### Skupina [GET]
 + Response 200 (application/json)
 
@@ -205,42 +202,72 @@ Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsah
                 }
             ]
             
+## Soubory [/groups/{id}/files]
+Soubory hlavního streamu skupiny
+### Soubory [GET]
++ Response 200 (application/json)
+
+    + Body
+
+            [
+                {
+                    "user": {
+                        "id": 3,
+                        "name": "Templeton Peck",
+                        "image": "/users/images/1315648.jpg"
+                    },
+                    "type": 1,
+                    "name": "Dokumenty",
+                    
+                }
+            ]
+            
 
 # Group Téma
-
 ## Topics Collection [/topics/{id}]
 ### Téma skupiny [GET]
 + Response 200 (application/json)
 
-        [
-            {
-                "id": 1, 
-                "name": "A-Team",
-                "category": {
-                    "name": "Heroes",  
-                },
-                "creator": {
-                    "id": 1,
-                    "name": "B. A. Baracus",
-                },
-                "members": [
-                    {
-                        "id": 2,
-                        "name": "John Smith",
-                        "image": "/users/images/1315648.jpg"
-                        "admin": true
-                    },
-                    {
-                        "id": 3,
-                        "name": "Templeton Peck",
-                        "image": "/users/images/1315648.jpg",
-                        "admin": false
-                    },
-                    
-                ],
-                "notifications": []
+
+        {
+            "id": 1, 
+            "name": "Tajné mise",
+            "priority": 3,
+            "creator": {
+                "id": 1,
+                "name": "B. A. Baracus",
+            },
+            "group":{
+                "id": 1,
+                "name": "A-Team"
+            },
+            "responsiblePerson": {
+                "id": 3,
+                "name": "Templeton Peck",
+                "image": "/users/images/1315648.jpg"
             }
-        ]
+            "dueDate": {
+                "date": "2013-01-31 11:14:05",
+                "timezoneType": 3,
+                "timezone": "America\/Los_Angeles"
+            }
+            "status" : {
+                "id": 1,
+                "name": "Ready",
+                "colour": "fff",
+            }
+            "tags": [
+                {
+                    "id" : 1,
+                    "name": "asap",
+                },
+                {
+                    "id" : 2,
+                    "name": "alkohol",
+                },
+            ]
+            "notifications": []
+        }
 
 ## Stream [/topics/{id}/posts]
 Příspěvky streamu tématu (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts?pinned=1` 
@@ -250,7 +277,7 @@ Atributy postu:
 - `type` - 1 pokud se jedná o klasický příspěvek a obsahuje parametr `message`, 2 pokud jde o událost(i) a obsahuje `events` (př. přidání uživatele do skupiny)
 
 
-### Skupina [GET]
+### Příspěvky [GET]
 + Response 200 (application/json)
 
     + Body
