@@ -2,8 +2,9 @@ FORMAT: 1A
 HOST: http://www.google.com
 
 
-# grups
-Notes API is a *short texts saving* service similar to its physical paper presence on your table.
+# Grups
+Všechna data jsou v GMT a uživatelé mají uložené vlastní časové pásmo, pomocí kterého následně frontend zajistí správné formátování výpisu
+
 
 # Group Skupina
 
@@ -40,13 +41,22 @@ Notes API is a *short texts saving* service similar to its physical paper presen
                 "notifications": []
             }
         ]
+        
+### Vytvoření skupiny [POST]
++ Request (application/json)
+
+        {
+            "name": "Fantastic Four",
+        }
++ Response 201 (application/json)
+    
+        {}
 
 
-
-## Group [/groups/{id}]
+## Group [/groups/<id>]
 Popis skupiny
 
-### Skupina [GET]
+### Informace skupiny [GET]
 + Response 200 (application/json)
 
     + Body
@@ -75,11 +85,7 @@ Popis skupiny
                             "name": "Templeton Peck",
                             "image": "/users/images/1315648.jpg"
                         }
-                        "dueDate": {
-                            "date": "2013-01-31 11:14:05",
-                            "timezoneType": 3,
-                            "timezone": "America\/Los_Angeles"
-                        }
+                        "dueDate": "2013-01-31 11:14:05",
                         "status" : {
                             "id": 1,
                             "name": "Ready",
@@ -99,15 +105,23 @@ Popis skupiny
                 ]
             }
       
-## Stream [/groups/{id}/posts]
-Příspěvky hlavního streamu skupiny (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts?pinned=1` 
+### Úprava skupiny [PUT]
++ Response 200 (application/json)
+
+        {}
+
+      
+## Stream [/groups/<id>/posts]
+Parametry `pinned=<0-1>`, `page` číslo strany, `limit` počet na stranu
+
+Příspěvky hlavního streamu. Pinned=1 vrací <b>všechny připnuté příspěvky</b>
 
 Atributy postu:
 
 - `type` - 1 pokud se jedná o klasický příspěvek a obsahuje parametr `message`, 2 pokud jde o událost(i) a obsahuje `events` (př. přidání uživatele do skupiny)
 
 
-### Skupina [GET]
+### Načtení příspěvků [GET]
 + Response 200 (application/json)
 
     + Body
@@ -125,16 +139,8 @@ Atributy postu:
                             "image": "/users/images/1315648.jpg"
                         },
                         "message": {
-                            "createdDate": {
-                                "date": "2013-01-31 11:14:05",
-                                "timezoneType": 3,
-                                "timezone": "America\/Los_Angeles"
-                            },
-                            "modifiedDate": {
-                                "date": "2013-01-31 11:14:05",
-                                "timezoneType": 3,
-                                "timezone": "America\/Los_Angeles"
-                            },
+                            "createdDate": "2013-01-31 11:14:05",
+                            "modifiedDate": "2013-01-31 11:14:05",
                             "content": "Přeji všem úspěšnou akci"
                         }
                     },
@@ -149,92 +155,106 @@ Atributy postu:
                             {
                                 "id": 1,
                                 "type": 1,
-                                "createdDate": {
-                                    "date": "2013-01-31 11:14:05",
-                                    "timezoneType": 3,
-                                    "timezone": "America\/Los_Angeles"
-                                },
+                                "createdDate": "2013-01-31 11:14:05",
                             },
                             {
                                 "id": 2,
                                 "type": 2,
-                                "createdDate": {
-                                    "date": "2013-01-31 11:14:05",
-                                    "timezoneType": 3,
-                                    "timezone": "America\/Los_Angeles"
-                                },
+                                "createdDate": "2013-01-31 11:14:05",
                             }
                         ]
                     }
                 ]
             }
       
+### Vytvoření příspěvku [POST]
++ Request (application/json)
+
+        {
+            "content": "Ahoj Františku, jak se máš?",
+            "files": [ 1, 2 , 4]
+        }
+    
++ Response 201 (application/json)
+
+        {       }
+
             
-## Připnuté příspěvky [/groups/{id}/posts?pinned=1]
-Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsahuje `events`
-
-
-### Připnuté příspěvky [GET]
-+ Response 200 (application/json)
-
-    + Body
-
-            [
-                {
-                    "user": {
-                        "id": 3,
-                        "name": "Templeton Peck",
-                        "image": "/users/images/1315648.jpg"
-                    },
-                    "message": {
-                        "createdDate": {
-                            "date": "2013-01-31 11:14:05",
-                            "timezoneType": 3,
-                            "timezone": "America\/Los_Angeles"
-                        },
-                        "modifiedDate": {
-                            "date": "2013-01-31 11:14:05",
-                            "timezoneType": 3,
-                            "timezone": "America\/Los_Angeles"
-                        },
-                        "content": "UPOZORNĚNÍ: Akce se bude konat příští měsíc"
-                    }
-                }
-            ]
-            
-## Soubory [/groups/{id}/files/{directoryId}]
-Soubory hlavního streamu skupiny
+## Adresáře [/groups/<id>/directories{/<directoryId>}]
+Pokud je `directoryId` prázdné, bere se v úvahu kořen
 
 Atributy položky:
 
 - `type` - 1 soubor, 2 složka, 3 google drive...
     
-### Soubory [GET]
+### Obsah adresáře [GET]
 + Response 200 (application/json)
 
     + Body
 
-            [
-                {
-                    "user": {
-                        "id": 3,
-                        "name": "Templeton Peck",
-                        "image": "/users/images/1315648.jpg"
-                    },
-                    "type": 1,
-                    "kind": "excel file",
-                    "name": "Tabulka",
-                    "modifiedDate": {
-                        "date": "2013-01-31 11:14:05",
-                        "timezoneType": 3,
-                        "timezone": "America\/Los_Angeles"
-                    },
+            {
+                "id": 1,
+                "name": "Tajné dokumenty",
+                "content": [
+                    {
+                        "id": 1,
+                        "user": {
+                            "id": 3,
+                            "name": "Templeton Peck",
+                            "image": "/users/images/1315648.jpg"
+                        },
+                        "type": 1,
+                        "kind": "excel file",
+                        "name": "Tabulka",
+                        "modifiedDate": "2013-01-31 11:14:05",
+                    }
+                ]
+                "parent": {
+                    "id": 3,
+                    "name": "Všechny tajnosti",
+                    "parent": {
+                        {
+                            "id": 5,
+                            "name": "Hlavní složka",
+                            "parent": null
+                        }
+                    }
                 }
-            ]
-            
+            }
+
+### Nový adresář [POST]
++ Request (application/json)
+
+        {
+            "name": "Soubor",
+
+        }
++ Response 200 (application/json)
+
+        {
+        
+        }
+
+## Soubor [/groups/<id>/files{/<directoryId>}]
+
+
+### Nový soubor [POST]
++ Request (application/json)
+
+        Soubor
+        
++ Response 201 (application/json)
+
+        {
+        
+        }
+
+
+
+
 
 # Group Téma
-## Topics Collection [/topics/{id}]
+## Topic [/topics/<id>]
 ### Téma skupiny [GET]
 + Response 200 (application/json)
 
@@ -256,11 +276,7 @@ Atributy položky:
                 "name": "Templeton Peck",
                 "image": "/users/images/1315648.jpg"
             }
-            "dueDate": {
-                "date": "2013-01-31 11:14:05",
-                "timezoneType": 3,
-                "timezone": "America\/Los_Angeles"
-            }
+            "dueDate": "2013-01-31 11:14:05",
             "status" : {
                 "id": 1,
                 "name": "Ready",
@@ -279,8 +295,7 @@ Atributy položky:
             "notifications": []
         }
 
-## Stream [/topics/{id}/posts]
-Příspěvky streamu tématu (bez připnutých příspěvků), pro kompletní výpis je potřeba zavolat také `/groups/{id}/posts?pinned=1` 
+## Stream [/topics/<id>/posts{?pinned=<0-1>}]
 
 Atributy postu:
 
@@ -305,16 +320,8 @@ Atributy postu:
                             "image": "/users/images/1315648.jpg"
                         },
                         "message": {
-                            "createdDate": {
-                                "date": "2013-01-31 11:14:05",
-                                "timezoneType": 3,
-                                "timezone": "America\/Los_Angeles"
-                            },
-                            "modifiedDate": {
-                                "date": "2013-01-31 11:14:05",
-                                "timezoneType": 3,
-                                "timezone": "America\/Los_Angeles"
-                            },
+                            "createdDate": "2013-01-31 11:14:05",
+                            "modifiedDate": "2013-01-31 11:14:05",
                             "content": "Přeji všem úspěšnou akci"
                         }
                     },
@@ -329,20 +336,12 @@ Atributy postu:
                             {
                                 "id": 1,
                                 "type": 1,
-                                "createdDate": {
-                                    "date": "2013-01-31 11:14:05",
-                                    "timezoneType": 3,
-                                    "timezone": "America\/Los_Angeles"
-                                },
+                                "createdDate": "2013-01-31 11:14:05",
                             },
                             {
                                 "id": 2,
                                 "type": 2,
-                                "createdDate": {
-                                    "date": "2013-01-31 11:14:05",
-                                    "timezoneType": 3,
-                                    "timezone": "America\/Los_Angeles"
-                                },
+                                "createdDate": "2013-01-31 11:14:05",
                             }
                         ]
                     }
@@ -350,37 +349,6 @@ Atributy postu:
             }
       
             
-## Připnuté příspěvky [/topics/{id}/posts?pinned=1]
-Připnuté příspěvky hlavního streamu skupiny seřazené podle data, neobsahuje `events`
-
-
-### Připnuté příspěvky [GET]
-+ Response 200 (application/json)
-
-    + Body
-
-            [
-                {
-                    "user": {
-                        "id": 3,
-                        "name": "Templeton Peck",
-                        "image": "/users/images/1315648.jpg"
-                    },
-                    "message": {
-                        "createdDate": {
-                            "date": "2013-01-31 11:14:05",
-                            "timezoneType": 3,
-                            "timezone": "America\/Los_Angeles"
-                        },
-                        "modifiedDate": {
-                            "date": "2013-01-31 11:14:05",
-                            "timezoneType": 3,
-                            "timezone": "America\/Los_Angeles"
-                        },
-                        "content": "UPOZORNĚNÍ: Akce se bude konat příští měsíc"
-                    }
-                }
-            ]
 
 
 
