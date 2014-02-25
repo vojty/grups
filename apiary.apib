@@ -1,9 +1,19 @@
 FORMAT: 1A
 HOST: http://www.google.com
 
-
 # Grups
 Všechna data jsou v GMT a uživatelé mají uložené vlastní časové pásmo, pomocí kterého následně frontend zajistí správné formátování výpisu
+
+Prefix všech volání `/api/v<verze>/<locale>` př. `/api/v1/cs/`
+
+# TODO
+- návratové hodnoty po POST, PUT, DELETE
+- návratové hodnoty chyb
+- autorizace
+- CSFR
+- přidalat případné řazení a filtraci, kde bude potřeba
+- Call na notifikace
+
 
 
 # Group Skupina
@@ -168,6 +178,7 @@ Atributy postu:
             }
       
 ### Vytvoření příspěvku [POST]
+Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
 + Request (application/json)
 
         {
@@ -223,6 +234,12 @@ Atributy položky:
             }
 
 ### Nový adresář [POST]
+Volitelný parametr `directoryId` zde slouží jako nadřazená složka
+
+Omezení:
+
+- `name` - maximální délka 100 znaků
+    
 + Request (application/json)
 
         {
@@ -235,10 +252,16 @@ Atributy položky:
         
         }
 
-## Soubor [/groups/<id>/files{/<directoryId>}]
-
-
+## Dočasný soubor [/groups/<id>/temporary-files]
 ### Nový soubor [POST]
+Slouží k uploadování souborů přes nový příspěvek. Soubor je nejprve uložen na dočasné uložiště, poté je potřeba přiřadit jeho ID k novému příspěvku ve volání `POST /posts`
+
+Pokud soubory nejsou spárovány s příspěvkem, jsou automaticky smazány za XX hodin.
+
+Omezení:
+
+- `filename` - maximální délka 200 znaků (včetně koncovky), zbytek se ořízne
+
 + Request (application/json)
 
         Soubor
@@ -246,7 +269,28 @@ Atributy položky:
 + Response 201 (application/json)
 
         {
+            "id": 2,
+            ... todo parametry potřebné na frontend
+        }
+
+
+## Soubor [/groups/<id>/files{/<directoryId>}]
+### Nový soubor přes Files [POST]
+Slouží k uploadování souborů přes sekci FILES (vytváří notifikace). Pro nahrávní souborů přes Post použijte `asd`
+
+Omezení:
+
+- `filename` - maximální délka 200 znaků (včetně koncovky), zbytek se ořízne
+
+
++ Request (application/json)
+
+        Soubor
         
++ Response 201 (application/json)
+
+        {
+            ... todo parametry potřebné na frontend
         }
 
 
@@ -254,7 +298,65 @@ Atributy položky:
 
 
 # Group Téma
-## Topic [/topics/<id>]
+
+## Topic collection [/groups/<id>/topics]
+
+### Témata skupiny [GET]
+
++ Response 200 (application/json)
+
+
+        [
+            {
+                "id": 1, 
+                "name": "Tajné mise",
+                "priority": 3,
+                "creator": {
+                    "id": 1,
+                    "name": "B. A. Baracus",
+                },
+                "group":{
+                    "id": 1,
+                    "name": "A-Team"
+                },
+                "responsiblePerson": {
+                    "id": 3,
+                    "name": "Templeton Peck",
+                    "image": "/users/images/1315648.jpg"
+                }
+                "dueDate": "2013-01-31 11:14:05",
+                "status" : {
+                    "id": 1,
+                    "name": "Ready",
+                    "colour": "fff",
+                }
+                "tags": [
+                    {
+                        "id" : 1,
+                        "name": "asap",
+                    },
+                    {
+                        "id" : 2,
+                        "name": "alkohol",
+                    },
+                ]
+                "notifications": []
+            }
+        ]
+
+
+### Vytvoření tématu [POST]
++ Request (application/json)
+
+        {
+            "name": "Tajné skupiny"
+        }
+        
++ Response 201 (application/json)
+
+        {}
+
+## Topic [/groups/<id>/topics/<id>]
 ### Téma skupiny [GET]
 + Response 200 (application/json)
 
@@ -295,7 +397,7 @@ Atributy položky:
             "notifications": []
         }
 
-## Stream [/topics/<id>/posts{?pinned=<0-1>}]
+## Stream [/groups/<id>/topics/<id>/posts{?pinned=<0-1>}]
 
 Atributy postu:
 
