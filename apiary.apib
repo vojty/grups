@@ -190,6 +190,24 @@ Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
 
         {       }
 
+
+## Příspěvek [/groups/<id>/posts/<id>]
+### Detail příspěvku
++ Response
+
+        {
+            "type" : 1,
+            "user": {
+                "id": 3,
+                "name": "Templeton Peck",
+                "image": "/users/images/1315648.jpg"
+            },
+            "message": {
+                "createdDate": "2013-01-31 11:14:05",
+                "modifiedDate": "2013-01-31 11:14:05",
+                "content": "Přeji všem úspěšnou akci"
+            }
+        }
             
 ## Adresáře [/groups/<id>/directories{/<directoryId>}]
 Pokud je `directoryId` prázdné, bere se v úvahu kořen
