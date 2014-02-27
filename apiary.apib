@@ -188,12 +188,15 @@ Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
     
 + Response 201 (application/json)
 
-        {       }
+        {   
+            "id" : 1
+        }
 
 
-## Příspěvek [/groups/<id>/posts/<id>]
-### Detail příspěvku
-+ Response
+## Post [/groups/<id>/posts/<id>] 
+### Detail příspěvku [GET]
+
++ Response 200 (application/json)
 
         {
             "type" : 1,
@@ -208,6 +211,8 @@ Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
                 "content": "Přeji všem úspěšnou akci"
             }
         }
+
+
             
 ## Adresáře [/groups/<id>/directories{/<directoryId>}]
 Pokud je `directoryId` prázdné, bere se v úvahu kořen
@@ -378,7 +383,6 @@ Omezení:
 ### Téma skupiny [GET]
 + Response 200 (application/json)
 
-
         {
             "id": 1, 
             "name": "Tajné mise",
@@ -467,8 +471,6 @@ Atributy postu:
                     }
                 ]
             }
-      
-            
 
 
 
