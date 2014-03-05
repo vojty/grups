@@ -20,19 +20,16 @@ Prefix všech volání `/api/v<verze>/<locale>` př. `/api/v1/cs/`
 
 ## Groups Collection [/groups]
 ### Seznam skupin [GET]
+
+Vrátí seznam pro výpis na homepage. Podle `type` se rozhoduje jestli `1`=skupinam, `2`=kategorie se skupinami
+
 + Response 200 (application/json)
 
         [
             {
                 "id": 1, 
                 "name": "A-Team",
-                "category": {
-                    "name": "Heroes",  
-                },
-                "creator": {
-                    "id": 1,
-                    "name": "B. A. Baracus",
-                },
+                "type": 1,
                 "members": [
                     {
                         "id": 2,
@@ -49,6 +46,33 @@ Prefix všech volání `/api/v<verze>/<locale>` př. `/api/v1/cs/`
                     
                 ],
                 "notifications": []
+            },{
+                "id": 3, 
+                "name": "Kategorie ABC",
+                "type": 2,
+                "groups":[
+                    {
+                        "id": 1, 
+                        "name": "A-Team",
+                        "type": 1,
+                        "members": [
+                            {
+                                "id": 2,
+                                "name": "John Smith",
+                                "image": "/users/images/1315648.jpg"
+                                "admin": true
+                            },
+                            {
+                                "id": 3,
+                                "name": "Templeton Peck",
+                                "image": "/users/images/1315648.jpg",
+                                "admin": false
+                            },
+                            
+                        ],
+                        "notifications": []
+                    }
+                ]
             }
         ]
         
@@ -60,7 +84,12 @@ Prefix všech volání `/api/v<verze>/<locale>` př. `/api/v1/cs/`
         }
 + Response 201 (application/json)
     
-        {}
+        {
+            "id": 1,
+            "name": "Fantastic Four",
+            "hash": "07ced4ccbec3ab8e8d0ed617408f5818"
+            "image"
+        }
 
 
 ## Group [/groups/<id>]
