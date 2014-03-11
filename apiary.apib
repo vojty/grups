@@ -167,7 +167,7 @@ Atributy postu:
 
             { 
                 "total": 500,
-                "page": 0,
+                "offset": 0,
                 "limit": 20,
                 "posts": [
                     {
@@ -182,6 +182,12 @@ Atributy postu:
                             "modifiedDate": "2013-01-31 11:14:05",
                             "content": "Přeji všem úspěšnou akci"
                         }
+                        "files": [
+                            {
+                                "id": 1,
+                                "name": "neco.txt"
+                            }
+                        ]
                     },
                     {
                         "type" : 2,
@@ -208,6 +214,7 @@ Atributy postu:
       
 ### Vytvoření příspěvku [POST]
 Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
+Response je stejná jako detail konkrétního příspěvku
 + Request (application/json)
 
         {
@@ -215,19 +222,11 @@ Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
             "files": [ 1, 2 , 4]
         }
     
+
 + Response 201 (application/json)
 
         {   
-            "id" : 1
-        }
-
-
-## Post [/groups/<id>/posts/<id>] 
-### Detail příspěvku [GET]
-
-+ Response 200 (application/json)
-
-        {
+            "id": 1
             "type" : 1,
             "user": {
                 "id": 3,
@@ -239,6 +238,39 @@ Pole `files` obsahuje ID souborů z volání `/groups/<id>/temporary-files`
                 "modifiedDate": "2013-01-31 11:14:05",
                 "content": "Přeji všem úspěšnou akci"
             }
+            "files": [
+                {
+                    "id": 1,
+                    "name": "neco.txt"
+                }
+            ]
+        }
+
+
+## Post [/groups/<id>/posts/<id>] 
+### Detail příspěvku [GET]
+
++ Response 200 (application/json)
+
+        {
+            "id": 1
+            "type" : 1,
+            "user": {
+                "id": 3,
+                "name": "Templeton Peck",
+                "image": "/users/images/1315648.jpg"
+            },
+            "message": {
+                "createdDate": "2013-01-31 11:14:05",
+                "modifiedDate": "2013-01-31 11:14:05",
+                "content": "Přeji všem úspěšnou akci"
+            },
+            "files": [
+                {
+                    "id": 1,
+                    "name": "neco.txt"
+                }
+            ]
         }
 
 
